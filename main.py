@@ -8,20 +8,37 @@ def main():
     pygame.init()
     print("Starting asteroids!")
 
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     clock = pygame.time.Clock()
     dt = 0
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    # Pygame groups of updatable and drawable objects
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
+
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
 
+        # Init black screen
         screen.fill((0, 0, 0))
-        player.draw(screen)
-        pygame.display.flip()
+
+        # Calculate dt in seconds and limit fps to 60
         dt = clock.tick(60) / 1000
+
+        # Update all updatables
+        for item in updatable:
+            item.update(dt)
+
+        # Draw all drawables
+        for item in drawable:
+            item.draw(screen)
+
+        pygame.display.flip()
 
 
 if __name__ == "__main__":
